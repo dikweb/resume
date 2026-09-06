@@ -18,6 +18,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const imHighlights = [
   {
     title: "实时消息同步的竞态条件处理",
@@ -534,7 +536,7 @@ export default function Home() {
         <div className="relative mb-4">
           <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-border shadow-lg">
             <Image
-              src="/avatars/avatar.webp"
+              src={`${mediaBasePath}/avatars/avatar.webp`}
               alt="丁凯"
               width={80}
               height={80}
