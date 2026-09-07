@@ -4,17 +4,17 @@ export const imHighlights = [
   {
     title: "Socket 消息收发的竞态处理与增量合并",
     summary:
-      "连续发送（文字+多文件）与 Socket 推送同时发生时，各回调异步返回可能基于过期的 chatList.length 覆盖增量，造成消息未上屏。方案用房间级未确认计数 + 50ms debounce 窗口合并增量追加；回调内通过 useRef 桥接读取最新 state，规避闭包捕获旧值。",
+      "消息列表采用「按 chatSize 窗口整表重拉、整体替换」。连发多条时各发送确认回调异步乱序返回，会用过期的列表长度算出偏小的窗口并整体覆盖，导致新消息漏显示。方案：发送时按房间累计待确认条数，由首个返回的回调一次性把窗口放大到正确大小，其余回调按最新长度再拉、幂等；多条推送合并到 50ms 内刷新一次时，用 ref 把期间到达的条数全部计入窗口；socket 回调读状态统一走 ref.current / store.getState()，避免读到注册时的旧值。",
   },
   {
     title: "IntersectionObserver 驱动的消息已读追踪",
     summary:
-      "基于 IntersectionObserver 对未读消息做可见性检测，进入视口即自动已读上报，已读后 unobserve 避免重复；服务端写入失败回滚本地已读标记；已读上报后用 300ms debounce 刷新房间未读数。",
+      "基于 IntersectionObserver 对未读消息做可见性检测：进入可视区即乐观更新本地已读（DOM + store 同步，Set 防同帧重复上报），再经 socket ack 确认——成功则 unobserve 停观察并 debounce 刷新未读数；失败则三态回滚（DOM 属性、store isRead、重入标记）并保持观察，下次可见时自动重试上报，保证已读最终一致。",
   },
   {
     title: "细粒度状态管理与渲染优化",
     summary:
-      "基于 Zustand 模块化 store（chat/files/socket/login），用 Reselect memoized selector（结果深比较、值相等时复用旧引用）降低高频消息场景的无效订阅渲染；changeReadStatus 更新单条消息时保持其余消息引用稳定，配合高频子组件的 React.memo + 自定义比较函数跳过重渲染。",
+      "把渲染优化做成闭环：组件只订阅最小切片、派生数据经 Reselect 深比较复用旧引用，保证引用可预期；changeReadStatus 只改命中消息引用、其余保持稳定，React.memo 据此短路未变消息的整棵子树，单条更新 O(N)→O(1)；整表重拉引用必变时，用自定义比较函数按业务字段兜底——任何更新只重渲染真正受影响的子树。",
   },
   {
     title: "富媒体上传与录制",
@@ -22,37 +22,27 @@ export const imHighlights = [
       "多文件逐个上传并基于 Axios onUploadProgress 实时更新进度；MediaRecorder 实现浏览器端音视频录制；js-web-screen-shot（WebRTC）窗口截图转 File 后统一上传，回填 URL 再组装为消息发出，打通「选择-上传-预览-发送」链路。",
   },
   {
-    title: "全局音频播放互斥与事件总线设计",
+    title: "Mitt 事件总线驱动的跨组件协作：播放互斥与实时通知",
     summary:
-      "用轻量事件总线（Mitt）实现跨组件的播放互斥：任一音频/视频开播即广播，其余实例自动暂停；配合 useRef 读取最新播放状态，避免回调闭包读到旧值，组件卸载时清理监听。",
-  },
-  {
-    title: "Socket.io 双向事件类型契约",
-    summary:
-      "为 Socket.io 定义 ServerToClientEvents / ClientToServerEvents 事件契约接口，并以该类型标注 Zustand 中持有的 socket 实例，使 emit/on 调用获得编译期事件名与参数校验提示，降低拼写与载荷错配。",
+      "以轻量事件总线（Mitt：Symbol 事件键 + TS 类型化载荷）解耦无父子关系组件树间的协作：语音/音频/视频播放器经 play 事件实现全局互斥、同时只响一条；新消息、好友上下线、好友申请三类 socket 推送广播为独立事件，由 Header 的新消息横幅、好友状态条、铃铛红点分别订阅并 3s 自隐——播放不串音、消息即时提醒、好友动态实时感知，统一收敛为同一套发布订阅模型。",
   },
 ];
 
 export const backendImHighlights = [
   {
-    title: "Socket.io 连接握手 JWT 鉴权",
-    summary:
-      "Socket 长连接在 connection 握手阶段从 socket.handshake.auth.token 提取 JWT 校验，失败立即 disconnect 拒绝；通过后将 userId/username 注入 socket.data，供后续事件处理与状态广播使用。",
-  },
-  {
     title: "多 Tab 在线状态机与定向状态广播（前后端协同）",
     summary:
-      "断开连接后服务端用 io.fetchSockets() 统计该用户剩余活跃连接，据此判定 ONLINE/AWAY/OFFLINE 并落库，同时对当前在线成员 Socket 定向 emit changeStatus；前端配合 600ms 延迟上线 / 立即下线与 1000ms 合并去抖，降低多标签切换的状态抖动与通知风暴。",
+      "「服务端判死活、前端判焦点」：服务端仅以连接数判定——任一 Tab 存活即在线，全部断开才置 OFFLINE 并对共同房间成员定向广播；「是否在看」由浏览器 visibilitychange 上报——页面隐藏立即置 AWAY、重新可见延迟 600ms 才回 ONLINE，接收端再按 userId 合并去抖，消除快速切 Tab 造成的状态抖动与通知风暴。",
   },
   {
-    title: "房间列表接口的多查询并行组装",
+    title: "私聊会话寻址复用：双人房间去重与消息定向投递",
     summary:
-      "房间列表接口先查询用户全部房间，随后以 Promise.all 并行获取各房间未读数与最后一条消息，成员信息经 Map 去重后逐条填充并在内存中拼接，一次请求即产出排序、未读、最后消息、成员等完整列表数据。",
+      "好友列表选人私聊时不携带房间号，服务端先寻址：在本用户会话中检索是否已有「仅含双方」的双人房间，命中即复用，否则才以发送者为群主新建，使任意一对用户逻辑上只维护一个会话，从机制上消除重复建房与历史割裂；房间确定后文本与多文件合并为一批落库，并向房间内在线成员定向推送，单次消息事件完成寻址-落库-广播。",
   },
   {
-    title: "基于 MongoDB 原子操作符的幂等写入",
+    title: "撤回消息的全局广播：跨端同步会话列表摘要",
     summary:
-      "已读追加用 $addToSet 保证同用户不重复；软删除以 deleteMembers 数组 + 查询侧 $nin 过滤实现用户级删除；撤回用 findByIdAndDelete + Socket 全局广播通知在线端移除；好友双向添加用 $ne 守卫防止并发重复，全部为单文档原子写。",
+      "撤回若只向所在房间定向广播并不充分——房间列表会将每房间最后一条消息聚合为会话摘要展示在所有在线端，被撤回的若恰是最新一条，未停留在该房间的端同样需要刷新。故 revokeMsg 删除成功后采用 socket.broadcast.emit 全局广播，令所有持有该会话摘要的端联动更新，保证列表摘要与消息明细一致。",
   },
   {
     title: "阿里云 OSS 直传与 MIME 目录路由",
@@ -60,9 +50,6 @@ export const backendImHighlights = [
       "上传走 Multer memoryStorage，文件以 Buffer 交由 OSS putBuffer 直接上云、无本地磁盘 IO；按 MIME 类型自动路由到 weChatImages/Audio/Video/Files 四个目录，文件列表按 URL 前缀聚合检索。",
   },
 ];
-
-export const authModuleIntro =
-  "多模式身份认证（账号密码+图形验证码 / GitHub OAuth 2.0 / 邮箱注册 / token 化密码重置）+ 前端 PageAuth 路由守卫、safeFetch 统一请求出口（自动注入 JWT、401 全局登出）与后端 koaAuth 白名单、Socket.io 握手鉴权，构成「路由 → 请求 → 会话 → 长连接」全链路认证闭环。";
 
 export const authSystemHighlights = [
   {
@@ -76,47 +63,42 @@ export const authSystemHighlights = [
       "基于 Koa 洋葱模型设计五层中间件链（CORS → session → bodyParser → autoClearSession → koaAuth），noAuthPath 白名单路由豁免 + 401 统一拦截；对 koa-session 扩展字段级独立过期时间，验证码等会话字段到期惰性清理。",
   },
   {
-    title: "GitHub OAuth 2.0 三路分支自动合并与并行数据拉取",
+    title: "GitHub OAuth 2.0 账号自动合并与零操作登录",
     summary:
       "基于 Authorization Code Grant 流程：code→token 交换后并行拉取 GitHub profile 与 verified emails，通过 OAuthRel 表自动判断三路分支——已有绑定直接登录 / 邮箱匹配自动关联 / 新用户自动创建，真正实现首次 OAuth 用户零操作登录。",
   },
   {
-    title: "Nodemailer 邮件服务与 EJS 模板化密码重置闭环",
+    title: "密码重置闭环与邮箱验证发送控制",
     summary:
-      "Nodemailer SMTP 集成 + EJS 模板引擎实现动态邮件渲染；验证码校验、JWT 时效化密码重置链接、Session 发送频控三重保障；配合前端按邮箱域名映射一键跳转网页版邮箱，打通重置闭环。",
+      "Nodemailer SMTP + EJS 动态邮件渲染；注册/改邮箱验证码、JWT 时效化重置链接与 Session 发送频控三道防线；配合邮箱域名映射一键跳转网页邮箱，打通密码重置闭环。",
+  },
+  {
+    title: "一套凭证贯通 REST/上传/SSE/Socket 四通道",
+    summary:
+      "同一 JWT 贯通 JSON REST / 二进制上传 / SSE 流 / Socket 长连接四通道，均自动注入凭证并在失效时统一 dealLogout 登出；其中 Socket 在 connection 握手阶段从 handshake.auth.token 提取同一 JWT 由连接级中间件校验，失败立即 disconnect 拒绝，通过后把 userId/username 注入 socket.data 供后续事件使用。",
   },
 ];
 
 export const difyHighlights = [
   {
-    title: "SSE 流式响应与多阶段渲染管线",
+    title: "在既有 SSE 架构上扩展多事件流式链路",
     summary:
-      "基于 SSE 实现 Chat 流式对话，解析 token-level streaming；设计消息构建器模式渐进式渲染 LLM 输出，支持 thinking / message / tool_call / error 多种事件类型的差异化 UI 渲染。",
+      "Dify 已内置 SSE 流式会话。先读懂其消息构建器与事件渲染管线，再顺势扩展：定位事件分派扩展点，接入 thinking / 联网搜索 / 知识库引用等新事件类型并做差异化渲染，复用既有生命周期、以最小侵入叠加功能，保证与上游版本可持续合并——把对大厂源码设计的吸收，落实为可复用、可随上游演进的二次开发方法。",
   },
   {
     title: "深度思考推理链路可视化",
     summary:
-      "解析模型返回的 reasoning_content，在对话中独立展示思考过程（折叠/展开），实现类似 DeepSeek 的思考链交互体验；Zustand Store 管理 thinking 状态，与 message 流并行处理。",
+      "解析模型返回的 reasoning_content，在对话中独立展示思考过程（折叠/展开），实现类似 DeepSeek 的思考链交互体验。",
   },
   {
     title: "联网搜索与工具调用集成",
     summary:
-      "Chat 中接入联网搜索能力，工具调用事件以独立卡片呈现搜索步骤与结果摘要；多工具调用并行处理，错误与超时优雅降级。",
+      "Chat 中接入联网搜索能力，工具调用以独立卡片实时呈现搜索步骤与结果摘要，来源透明可追溯。",
   },
   {
     title: "Workflow 自定义节点扩展",
     summary:
-      "为 Dify Workflow 开发文档检索节点与会话文档召回节点，基于 ReactFlow 画布实现节点配置面板、参数校验与流式输出预览。",
-  },
-  {
-    title: "知识库召回测试体系",
-    summary:
-      "构建独立召回测试模块：支持上传测试集、多检索策略并行对比、可视化召回结果（命中率、MRR 等指标）、参数热调优。",
-  },
-  {
-    title: "大型开源项目的组件架构与深度定制",
-    summary:
-      "在 Dify 50 万+ 行代码的 Next.js 项目中完成深度二次开发，理解其 RSC + App Router 架构、i18n 体系、插件化设计；在保持与上游同步的前提下实现定制功能。",
+      "为 Dify Workflow 开发文档检索节点与会话文档召回节点，基于 ReactFlow 画布实现节点配置面板与参数校验。",
   },
 ];
 
@@ -124,32 +106,12 @@ export const agentHighlights = [
   {
     title: "多类型 SSE 流式响应渲染引擎",
     summary:
-      "Agent 对话接口返回多种流类型（文本/Markdown/图表/表格/操作建议），通过 event type 字段动态路由到对应渲染组件，一条 SSE 连接承载多种内容形态。",
+      "难点：回复是逐字到达的文本流，正文中会夹带 echarts/表格等代码栅栏；正文可边到边渲染，图表/表格须等栅栏闭合、内容完整才能解析。方案：流式栅栏解析 + 按块归档——正文即时推送渲染，图表/表格先攒到闭合、再整块一次性渲染，块按到达顺序排列、互不串位。",
   },
   {
-    title: "指标管理全链路前端建模",
+    title: "指标血缘图谱与全链路追踪",
     summary:
-      "实现数据源配置 → 数据集 SQL 编辑器 → 维度管理 → 指标定义 → 时间限定 → 指标物化调度的完整前端操作链路；React Hook Form + Zod 多层校验体系。",
-  },
-  {
-    title: "问答上下文与多轮对话管理",
-    summary:
-      "基于对话历史维护分析上下文（当前指标、维度、时间范围等），Agent 回答自动关联已有分析上下文；上下文面板实时展示当前分析焦点，支持手动切换与清除。",
-  },
-  {
-    title: "智能推荐与异常检测",
-    summary:
-      "Agent 主动推送异常波动检测（环比/同比异常）和优化建议；推荐卡片组件支持一键采纳，自动将建议转化为实际分析操作。",
-  },
-  {
-    title: "指标视图多维可视化与大数据量渲染优化",
-    summary:
-      "支持表格/折线图/柱状图/饼图/热力图多种视图切换；维度下钻上卷、时间拖拽缩放；虚拟滚动 + 图表数据采样（LTTB）应对 10 万+ 数据量。",
-  },
-  {
-    title: "指标物化调度与状态追踪",
-    summary:
-      "异步物化任务的前端调度与全生命周期状态追踪；WebSocket + 轮询双通道状态同步；时间线组件可视化物化历史和增量更新。",
+      "难点：指标可派生/复合自其它指标，再经字段落到数据表，血缘呈多对多 DAG，用列表/树表达不了汇聚与层级。方案：将血缘数据建模为「指标→字段→表」的 node/edge，React Flow 渲染 + dagre 分层自动布局规避跨层边交叉；点选节点高亮上下游全链路、弱化无关节点。",
   },
 ];
 
@@ -193,15 +155,11 @@ export const learningCourses: Course[] = [
   {
     title: "Python 语言与全栈后端工程",
     position:
-      "系统性自学 Python 语言核心并贯通企业级后端工程：从对象模型与元编程、asyncio 异步编程，到 FastAPI 三层架构、SQLAlchemy 2.0 异步 ORM 与依赖注入、自动化测试，再到 AI 导购流式应用与 Docker/k8s 全链路部署，形成从前端到 Python 后端的完整工程能力。",
+      "系统性自学 Python 语言核心并贯通企业级后端工程：从对象模型与元编程、asyncio 异步编程，到 FastAPI 三层架构、SQLAlchemy 2.0 异步 ORM 与依赖注入、自动化测试，形成从前端到 Python 后端的完整工程能力。",
     points: [
       {
-        title: "深入对象模型与元编程",
-        desc: "系统掌握元类、装饰器、描述符与魔术方法，理解 type 动态建类与对象创建过程，实现自动注册、单例、惰性计算等机制，从“会写”进阶到理解 Python 类型系统本质。",
-      },
-      {
-        title: "自底向上还原异步编程",
-        desc: "从零手写事件循环、Future、协程与 Task 理解 asyncio 运行机制，再衔接 gather / TaskGroup / Queue / to_thread 等官方 API，并基于 httpx + LLM 流式搭建“多智能体协同调研”综合实战。",
+        title: "深入对象模型与异步编程",
+        desc: "系统掌握元类、装饰器、描述符与魔术方法，理解 type 动态建类与对象创建过程，实现自动注册、单例、惰性计算等机制；并系统学习事件循环、Future、协程与 Task 等 asyncio 运行机制，掌握 gather 等官方 API。",
       },
       {
         title: "完整工程工具链",
@@ -210,14 +168,6 @@ export const learningCourses: Course[] = [
       {
         title: "企业级三层架构与数据层",
         desc: "FastAPI + 依赖注入（IoC/DI）分层为 api/service/model 三层，统一异常与统一响应、中间件；SQLAlchemy 2.0 异步 ORM + Alembic 数据迁移，覆盖长短事务、CRUD、文件上传（OSS）等真实业务；pytest 单元/集成/E2E 分层测试，覆盖率约 80%。",
-      },
-      {
-        title: "大模型流式应用（AI 导购）",
-        desc: "Jinja2 按商品数据渲染系统提示词并持久化会话，基于 DeepSeek（OpenAI 兼容协议）实现对话，通过 SSE 逐字推送 + WebSocket 双通道流式输出，前端配套 useSSEChat Hook。",
-      },
-      {
-        title: "全链路交付部署",
-        desc: "多阶段 Docker（uv）构建镜像，打通阿里云 OSS/ACR/RDS/ACS 云资产，Helm 部署（3 副本、initContainer 迁移、健康检查、HPA、Ingress），并以阿里云效完成 CI/CD 自动构建发布。",
       },
     ],
     tags: [
@@ -234,25 +184,21 @@ export const learningCourses: Course[] = [
     ],
   },
   {
-    title: "LLM 底层原理与手写 Agent",
+    title: "LLM 底层原理与自研 Agent",
     position:
-      "从神经元与 Transformer 原理逐层推导，再逐步手写可运行的 Agent 工程，亲手打通 LLM → Tool Calling → ReAct → MCP → Skill → 子代理全链路，可直接对标 Cursor / Claude Code 类产品结构。",
+      "从神经元与 Transformer 原理逐层推导，再逐步搭建可运行的 Agent 工程，亲手打通 LLM → Tool Calling → ReAct → MCP → Skill → 子代理全链路。",
     points: [
       {
         title: "LLM 底层原理推导",
-        desc: "手写 BPE 分词器并训练中文词表，理解词嵌入、注意力与多头 QKV、RoPE、残差归一化；掌握推理侧 Prefill/KV Cache、Temperature、Top-K/Top-P 采样与训练侧 SFT/RLHF/CoT。",
+        desc: "实现 BPE 分词器并训练中文词表，理解词嵌入、注意力与多头 QKV、RoPE、残差归一化；掌握推理侧 Prefill/KV Cache、Temperature、Top-K/Top-P 采样与训练侧 SFT/RLHF/CoT。",
       },
       {
-        title: "手写可运行自研 Agent 包",
+        title: "自研可运行 Agent 包",
         desc: "分层实现 model / session（会话持久化以命中 prompt cache）/ prompt（Jinja2 系统提示词）/ tool（Pydantic 动态 Schema + @tool 注册表）/ ReAct 主循环 / 事件驱动 listener，驱动 Agent 自主产出代码与架构分析文档。",
       },
       {
         title: "Agent 能力外延",
         desc: "接入 Ollama 本地模型与 Tavily 搜索构建“Agent 搜索引擎”；实现 Skill 渐进式披露；封装 MCP（JSON-RPC 2.0，stdio/http）Client、用 FastMCP 自建天气服务器并接入；子代理多线程并发编排。",
-      },
-      {
-        title: "可视化表达沉淀",
-        desc: "以 React 实现“神经网络交互实验室”（神经元/词嵌入/自注意力页），用前端技术栈可视化 Attention 计算过程，反哺前端表达与讲解能力。",
       },
     ],
     tags: [
@@ -274,7 +220,7 @@ export const learningCourses: Course[] = [
     points: [
       {
         title: "图编排与流程控制",
-        desc: "StateGraph + Reducer/add_messages 状态管理、节点与条件边、循环/并行、Send 动态扇出（map-reduce）与子图/子 Agent 组合，与前端状态管理心智高度同构、易于迁移。",
+        desc: "StateGraph + Reducer/add_messages 状态管理、节点与条件边、循环/并行、Send 动态扇出（map-reduce）与子图/子 Agent 组合。",
       },
       {
         title: "生产级状态与记忆",
@@ -305,3 +251,245 @@ export const learningCourses: Course[] = [
     ],
   },
 ];
+
+// ── 个人基础信息（经典版与新版共用） ──
+export const profile = {
+  name: "丁凯",
+  role: "高级前端开发工程师",
+  summary: "7 年经验 · AI Agent 全栈方向",
+  email: "1196715913@qq.com",
+  phone: "18301926957",
+  school: "东华大学 · 全日制硕士（211）",
+  skills: [
+    {
+      name: "前端",
+      detail: "React · Next.js · Vue · TypeScript · Tailwind",
+    },
+    {
+      name: "后端 / 数据",
+      detail:
+        "Python FastAPI · Koa2 · Socket.io · PostgreSQL · MySQL · MongoDB",
+    },
+    {
+      name: "AI / Agent",
+      detail:
+        "LangGraph · LangChain · DeepAgent · ReAct · Tool Calling · MCP · Skill",
+    },
+    {
+      name: "工程化",
+      detail: "Docker · Webpack · monorepo · CI/CD",
+    },
+  ],
+};
+
+// ── 工作经历（经典版与新版共用） ──
+export type Job = {
+  company: string;
+  role: string;
+  range: string;
+  points: string[];
+  tags: string[];
+};
+
+export const jobs: Job[] = [
+  {
+    company: "江苏红网",
+    role: "高级前端工程师",
+    range: "2024.04 - 至今",
+    points: [
+      "独立从零设计并全栈开发 IM 企业即时通讯系统（Next.js 15 + Koa + Socket.io + MongoDB）。",
+      "主导自研智能分析 Agent 产品 SSE 流式对话部分，实现按事件类型增量渲染的流式响应链路。",
+      "主导 Dify 开源平台二次开发，深度改造 Chat / Workflow / 知识库模块。",
+      "此外还负责若干常规业务系统的前端开发与维护，多为表单 + 增删改查类页面，此处不再展开。",
+    ],
+    tags: ["Next.js", "React", "Socket.io", "Koa", "MongoDB", "umi", "Vue"],
+  },
+  {
+    company: "SHEIN",
+    role: "高级前端工程师",
+    range: "2021.01 - 2024.03",
+    points: [
+      "负责财务前端 5 个 B 端业务系统的功能开发与维护，覆盖需求评审到上线验收全流程。",
+      "整合跨系统相同模块，封装通用组件与工具函数，统一多系统样式与组件规范。",
+    ],
+    tags: ["React", "TypeScript", "组件库"],
+  },
+  {
+    company: "优集计算机",
+    role: "软件实施 / Web 前端工程师",
+    range: "2019.04 - 2020.12",
+    points: [
+      "使用 Vue / Vuex / Vue Router 重构门户界面，优化性能与用户体验。",
+      "参与西门子 Teamcenter PLM 软件实施，覆盖产品全生命周期数据与流程。",
+    ],
+    tags: ["Vue", "Vuex", "PLM"],
+  },
+];
+
+// ── 项目经历（经典版与新版共用） ──
+export type HighlightItem = { title: string; summary: string };
+
+export type ProjectPart = {
+  head?: string;
+  headColor?: string;
+  items: HighlightItem[];
+};
+
+export type ProjectModule = {
+  chip: string;
+  label: string;
+  parts: ProjectPart[];
+};
+
+export type Project = {
+  title: string;
+  meta: string;
+  intro: string;
+  modules: ProjectModule[];
+  tags: { name: string; accent?: boolean }[];
+};
+
+export const projects: Project[] = [
+  {
+    title: "IM 即时通讯系统",
+    meta: "全栈项目 · 独立开发",
+    intro:
+      "企业级 IM 即时通讯与统一身份认证一体化平台。前端 Next.js 15 + React 19，后端 Koa + Socket.io + MongoDB，前后端分离架构，独立从零设计并实现全部功能链路。认证侧提供多模式身份认证（账号密码+图形验证码 / GitHub OAuth 2.0 / 邮箱注册 / token 化密码重置），配合前端 PageAuth 路由守卫、safeFetch 统一请求出口（自动注入 JWT、401 全局登出）与后端 koaAuth 白名单、Socket.io 握手鉴权，构成「路由 → 请求 → 会话 → 长连接」全链路认证闭环。",
+    modules: [
+      {
+        chip: "bg-primary/70",
+        label: "模块一：统一身份认证体系",
+        parts: [
+          {
+            items: authSystemHighlights,
+          },
+        ],
+      },
+      {
+        chip: "bg-chart-1/70",
+        label: "模块二：实时通讯系统",
+        parts: [
+          {
+            head: "前端 — Next.js + React 架构",
+            headColor: "bg-sky-500/70",
+            items: imHighlights,
+          },
+          {
+            head: "后端 — Koa + Socket.io + MongoDB 架构",
+            headColor: "bg-emerald-500/70",
+            items: backendImHighlights,
+          },
+        ],
+      },
+    ],
+    tags: [
+      { name: "Next.js 15", accent: true },
+      { name: "React 19", accent: true },
+      { name: "TypeScript", accent: true },
+      { name: "Socket.io", accent: true },
+      { name: "Zustand" },
+      { name: "Reselect" },
+      { name: "Tailwind CSS" },
+      { name: "Radix UI" },
+      { name: "Ant Design" },
+      { name: "Zod", accent: true },
+      { name: "React Hook Form", accent: true },
+      { name: "Mitt" },
+      { name: "Koa", accent: true },
+      { name: "MongoDB/Mongoose", accent: true },
+      { name: "JWT" },
+      { name: "Nodemailer" },
+      { name: "Ali-OSS" },
+      { name: "Multer" },
+      { name: "EJS" },
+      { name: "koa-session" },
+      { name: "svg-captcha" },
+      { name: "maskdata" },
+    ],
+  },
+  {
+    title: "智能分析 Agent（自研产品）",
+    meta: "自研产品 · 前端架构",
+    intro:
+      "面向 AI 数据分析的智能分析产品：前端自研多类型 SSE 流式渲染引擎，Agent 的回答在单条 SSE 连接内按事件类型增量推送并渲染 Markdown 正文/图表/表格等内容形态；指标侧提供血缘图谱，实现指标→字段→表全链路依赖追踪。",
+    modules: [
+      {
+        chip: "bg-amber-500/70",
+        label: "多类型 SSE 流渲染 & 指标血缘图谱",
+        parts: [{ items: agentHighlights }],
+      },
+    ],
+    tags: [
+      { name: "React", accent: true },
+      { name: "TypeScript", accent: true },
+      { name: "SSE", accent: true },
+      { name: "ECharts", accent: true },
+      { name: "React Flow" },
+      { name: "dagre" },
+      { name: "Zustand" },
+      { name: "Ant Design" },
+      { name: "WebSocket" },
+    ],
+  },
+  {
+    title: "Dify 开源项目二次开发",
+    meta: "Next.js · shadcn/ui",
+    intro:
+      "基于开源 Dify 平台进行深度二次开发，改造 Chat 对话模块、Workflow 工作流模块、知识库模块，满足企业级 AI 应用场景需求；在保持与上游定期同步的前提下实现定制功能可持续迭代。",
+    modules: [
+      {
+        chip: "bg-violet-500/70",
+        label: "Chat 对话模块 & Workflow 工作流模块 & 知识库体系",
+        parts: [{ items: difyHighlights }],
+      },
+    ],
+    tags: [
+      { name: "Next.js", accent: true },
+      { name: "TypeScript", accent: true },
+      { name: "shadcn/ui", accent: true },
+      { name: "SSE" },
+      { name: "Zustand" },
+      { name: "ReactFlow", accent: true },
+      { name: "Tailwind CSS" },
+      { name: "Radix UI" },
+      { name: "TanStack Query" },
+      { name: "SWR" },
+      { name: "i18n" },
+    ],
+  },
+  {
+    title: "财务业务组件库 FMS",
+    meta: "业务组件 · NPM 包",
+    intro:
+      "针对财务前端多系统组件版本不一致、辅助功能重复编写、Tab 缓存难维护等痛点，封装 FMSSearchTable 与 FMSModal 两个核心业务组件，首次将业务组件发布为公司级 NPM 包。",
+    modules: [
+      {
+        chip: "bg-orange-500/70",
+        label: "FMSSearchTable & FMSModal & NPM 发布",
+        parts: [{ items: componentHighlights }],
+      },
+    ],
+    tags: [
+      { name: "React", accent: true },
+      { name: "React Query", accent: true },
+      { name: "TypeScript" },
+      { name: "Axios" },
+      { name: "Ant Design" },
+      { name: "dumi" },
+      { name: "semantic-release" },
+      { name: "commitlint" },
+    ],
+  },
+];
+
+// ── 个人实践及发展方向（经典版与新版共用） ──
+export const practiceProfile = {
+  title: "技术画像与发展方向",
+  intro:
+    "7 年前端经验沉淀了扎实的工程化与产品化能力；近一年系统自学 Python 后端与 LLM/Agent 工程并全程动手实践，已补齐「前端 → Python 后端 → LLM 原理与 Agent 工程」的完整闭环。发展方向聚焦",
+  highlight: "AI 应用与 Agent 工程",
+  outro:
+    "：以 AI 应用的工程化落地为目标，将前端体验优势与 LLM/Agent、Python 后端能力结合，可独立承担从需求到上线的全链路交付。",
+};
+
+export const learningTitle = "AI Agent 体系化学习与实践";
