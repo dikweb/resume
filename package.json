@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build --no-lint",
-    "start": "next start"
+    "start": "next start",
+    "pdf": "node scripts/pdf.mjs"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.11",
@@ -26,6 +27,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "playwright-core": "^1.63.0",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.4",

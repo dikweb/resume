@@ -99,7 +99,7 @@ export default function Home() {
   );
 }
 
-function ClassicResume() {
+export function ClassicResume() {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-10">
       {/* ── Header ── */}
