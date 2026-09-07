@@ -256,7 +256,7 @@ export const learningCourses: Course[] = [
 export const profile = {
   name: "丁凯",
   role: "高级前端开发工程师",
-  summary: "7 年经验 · AI Agent 全栈方向",
+  summary: "7 年经验 · 3 年+ 财务系统 · 近2年+ 银行/券商 AI 应用",
   email: "1196715913@qq.com",
   phone: "18301926957",
   school: "东华大学 · 全日制硕士（211）",
@@ -297,10 +297,11 @@ export const jobs: Job[] = [
     role: "高级前端工程师",
     range: "2024.04 - 至今",
     points: [
+      "所在业务线服务银行/券商/基金等金融机构客户，主导其 AI 应用类产品的数据分析、对话交互与工程落地，对接真实业务口径需求。",
       "独立从零设计并全栈开发 IM 企业即时通讯系统（Next.js 15 + Koa + Socket.io + MongoDB）。",
       "主导自研智能分析 Agent 产品 SSE 流式对话部分，实现按事件类型增量渲染的流式响应链路。",
       "主导 Dify 开源平台二次开发，深度改造 Chat / Workflow / 知识库模块。",
-      "此外还负责若干常规业务系统的前端开发与维护，多为表单 + 增删改查类页面，此处不再展开。",
+      "此外还负责服务金融机构客户的若干常规业务系统的前端开发与维护，多为表单 + 增删改查类页面，此处不再展开。",
     ],
     tags: ["Next.js", "React", "Socket.io", "Koa", "MongoDB", "umi", "Vue"],
   },
@@ -408,10 +409,10 @@ export const projects: Project[] = [
     ],
   },
   {
-    title: "智能分析 Agent（自研产品）",
+    title: "金融数据分析 Agent（自研产品）",
     meta: "自研产品 · 前端架构",
     intro:
-      "面向 AI 数据分析的智能分析产品：前端自研多类型 SSE 流式渲染引擎，Agent 的回答在单条 SSE 连接内按事件类型增量推送并渲染 Markdown 正文/图表/表格等内容形态；指标侧提供血缘图谱，实现指标→字段→表全链路依赖追踪。",
+      "面向银行/券商等金融机构业务分析场景的智能分析产品：前端自研多类型 SSE 流式渲染引擎，Agent 的回答在单条 SSE 连接内按事件类型增量推送并渲染 Markdown 正文/图表/表格等内容形态；指标侧提供血缘图谱，实现指标→字段→表全链路依赖追踪。",
     modules: [
       {
         chip: "bg-amber-500/70",
@@ -420,6 +421,7 @@ export const projects: Project[] = [
       },
     ],
     tags: [
+      { name: "金融数据分析", accent: true },
       { name: "React", accent: true },
       { name: "TypeScript", accent: true },
       { name: "SSE", accent: true },
@@ -432,10 +434,10 @@ export const projects: Project[] = [
     ],
   },
   {
-    title: "Dify 开源项目二次开发",
+    title: "东北证券 Dify 平台二次开发",
     meta: "Next.js · shadcn/ui",
     intro:
-      "基于开源 Dify 平台进行深度二次开发，改造 Chat 对话模块、Workflow 工作流模块、知识库模块，满足企业级 AI 应用场景需求；在保持与上游定期同步的前提下实现定制功能可持续迭代。",
+      "基于开源 Dify 平台进行深度二次开发，改造 Chat 对话模块、Workflow 工作流模块、知识库模块，支撑银行/券商等金融机构的智能对话、知识库检索与工作流自动化场景需求；在保持与上游定期同步的前提下实现定制功能可持续迭代。",
     modules: [
       {
         chip: "bg-violet-500/70",
@@ -486,7 +488,7 @@ export const projects: Project[] = [
 export const practiceProfile = {
   title: "技术画像与发展方向",
   intro:
-    "7 年前端经验沉淀了扎实的工程化与产品化能力；近一年系统自学 Python 后端与 LLM/Agent 工程并全程动手实践，已补齐「前端 → Python 后端 → LLM 原理与 Agent 工程」的完整闭环。发展方向聚焦",
+    "7 年前端经验，其中 3 年+ 深耕财务 B 端系统、近 2 年+ 服务银行/券商等金融机构的数据与 AI 应用，理解金融业务对数据口径与准确性的要求，沉淀了扎实的工程化与产品化能力；近一年系统自学 Python 后端与 LLM/Agent 工程并全程动手实践，已补齐「前端 → Python 后端 → LLM 原理与 Agent 工程」的完整闭环。发展方向聚焦",
   highlight: "AI 应用与 Agent 工程",
   outro:
     "：以 AI 应用的工程化落地为目标，将前端体验优势与 LLM/Agent、Python 后端能力结合，可独立承担从需求到上线的全链路交付。",
