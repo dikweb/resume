@@ -20,6 +20,7 @@
 # production
 /build
 /resume.pdf
+/丁凯resume.pdf
 
 # misc
 .DS_Store
