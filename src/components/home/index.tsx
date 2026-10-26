@@ -10,13 +10,14 @@ import {
   profile,
   jobs,
   projects,
+  agentProjects,
   practiceProfile,
   learningTitle,
   learningIntro,
   learningCourses,
   type Course,
 } from "./resumeData";
-import { HighlightSection } from "./section-ui";
+import { ProjectCard } from "./section-ui";
 import NewResumeLayout from "./new-layout";
 
 const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -222,68 +223,7 @@ export function ClassicResume() {
 
         <div className="space-y-4">
           {projects.map((proj) => (
-            <Card
-              key={proj.title}
-              className="shadow-none border-border/60 hover:border-border transition-colors"
-            >
-              <CardContent className="pt-4">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <h3 className="text-base font-semibold text-foreground">
-                    {proj.title}
-                  </h3>
-                  <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                    {proj.meta}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {proj.intro}
-                </p>
-
-                {proj.modules.map((m, mi) => (
-                  <div
-                    key={m.label}
-                    className={
-                      mi > 0
-                        ? "pt-5 mt-5 border-t border-border/50"
-                        : "mt-5"
-                    }
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`w-1.5 h-4 rounded-full ${m.chip}`} />
-                      <h4 className="text-sm font-semibold text-foreground/80">
-                        {m.label}
-                      </h4>
-                    </div>
-                    {m.parts.map((part, pi) => (
-                      <div key={pi} className={pi > 0 ? "mt-4" : ""}>
-                        {part.head && (
-                          <div className="flex items-center gap-2 mb-3">
-                            <span
-                              className={`w-2 h-2 ${part.headColor} rounded-sm shrink-0`}
-                            />
-                            <h5 className="text-xs font-semibold text-foreground/70">
-                              {part.head}
-                            </h5>
-                          </div>
-                        )}
-                        <HighlightSection items={part.items} />
-                      </div>
-                    ))}
-                  </div>
-                ))}
-
-                <div className="flex flex-wrap gap-2 mt-5">
-                  {proj.tags.map((t) => (
-                    <Badge
-                      key={t.name}
-                      variant={t.accent ? "default" : "secondary"}
-                    >
-                      {t.name}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <ProjectCard key={proj.title} project={proj} />
           ))}
         </div>
       </section>
@@ -319,6 +259,19 @@ export function ClassicResume() {
         <div className="mt-4 space-y-4">
           {learningCourses.map((course) => (
             <LearningCard key={course.title} course={course} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── Agent 项目 ── */}
+      <section className="mb-12">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-5">
+          Agent 项目
+        </h2>
+
+        <div className="space-y-4">
+          {agentProjects.map((proj) => (
+            <ProjectCard key={proj.title} project={proj} />
           ))}
         </div>
       </section>

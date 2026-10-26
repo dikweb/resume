@@ -8,6 +8,7 @@ import {
   Briefcase,
   FolderKanban,
   Rocket,
+  Bot,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,13 +18,14 @@ import {
   profile,
   jobs,
   projects,
+  agentProjects,
   practiceProfile,
   learningTitle,
   learningIntro,
   learningCourses,
-  type ProjectModule,
+  type Project,
 } from "./resumeData";
-import { HighlightSection } from "./section-ui";
+import { ProjectCard } from "./section-ui";
 
 const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -101,35 +103,6 @@ function LeftPanel() {
   );
 }
 
-function ModuleBlock({ module }: { module: ProjectModule }) {
-  return (
-    <div className="mt-4">
-      <div className="flex items-center gap-2 mb-2">
-        <span className={`w-1.5 h-4 rounded-full ${module.chip}`} />
-        <h4 className="text-sm font-semibold text-foreground/80">
-          {module.label}
-        </h4>
-      </div>
-
-      {module.parts.map((part, i) => (
-        <div key={i} className={i > 0 ? "mt-3" : ""}>
-          {part.head && (
-            <div className="flex items-center gap-2 mb-1">
-              <span
-                className={`w-2 h-2 ${part.headColor} rounded-sm shrink-0`}
-              />
-              <h5 className="text-xs font-semibold text-foreground/70">
-                {part.head}
-              </h5>
-            </div>
-          )}
-          <HighlightSection items={part.items} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function WorkTab() {
   return (
     <div className="space-y-4">
@@ -166,42 +139,15 @@ function WorkTab() {
   );
 }
 
-function ProjectTab() {
+function ProjectTab({ list }: { list: Project[] }) {
   return (
     <div className="space-y-4">
-      {projects.map((proj) => (
-        <Card key={proj.title} className="shadow-none border-border/60">
-          <CardContent className="pt-3">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-base font-semibold text-foreground">
-                  {proj.title}
-                </h3>
-                <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                  {proj.meta}
-                </span>
-              </div>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {proj.intro}
-            </p>
-
-            {proj.modules.map((m) => (
-              <ModuleBlock key={m.label} module={m} />
-            ))}
-
-            <div className="flex flex-wrap gap-2 mt-5">
-              {proj.tags.map((t) => (
-                <Badge
-                  key={t.name}
-                  variant={t.accent ? "default" : "secondary"}
-                >
-                  {t.name}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      {list.map((proj) => (
+        <ProjectCard
+          key={proj.title}
+          project={proj}
+          className="shadow-none border-border/60"
+        />
       ))}
     </div>
   );
@@ -281,6 +227,7 @@ const tabMeta = [
   { value: "work", label: "工作经历", icon: Briefcase },
   { value: "project", label: "项目经历", icon: FolderKanban },
   { value: "practice", label: "个人实践及发展方向", icon: Rocket },
+  { value: "agent", label: "Agent 项目", icon: Bot },
 ];
 
 export default function NewResumeLayout() {
@@ -311,10 +258,13 @@ export default function NewResumeLayout() {
               <WorkTab />
             </TabsContent>
             <TabsContent value="project" className="mt-4">
-              <ProjectTab />
+              <ProjectTab list={projects} />
             </TabsContent>
             <TabsContent value="practice" className="mt-4">
               <PracticeTab />
+            </TabsContent>
+            <TabsContent value="agent" className="mt-4">
+              <ProjectTab list={agentProjects} />
             </TabsContent>
           </Tabs>
         </div>

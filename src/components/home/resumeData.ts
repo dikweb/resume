@@ -484,6 +484,52 @@ export const projects: Project[] = [
   },
 ];
 
+// ── Agent 项目（占位，后续替换为真实项目内容） ──
+export const agentProjectHighlights: HighlightItem[] = [
+  {
+    title: "评估上下文压缩与成本治理（Langfuse · LLM-as-Judge）",
+    summary:
+      "难点：LLM-as-Judge 评估器直接消费完整 Agent trace，输入塞满工具调用、工具结果与中间 ReAct 步骤，token 巨大；判官被内部过程噪音干扰，评的是“内部过程”而非“用户实际看到的答复”，评估失真且成本高。方案：扩展 MainAgentState 并实现 @after_agent 中间件，按“用户可见性”过滤消息——保留用户输入、最终答复与结构化响应，剔除带 tool_use 的中间 AI 消息与中间 ToolMessage，生成仅含用户可见内容的 turn_summary 作为评估器 {{context}}。效果：评估输入 token 与成本大幅下降，判官只评判用户可见内容，更贴近真实体验。",
+  },
+  {
+    title: "【占位】多工具 ReAct 工作流编排",
+    summary:
+      "占位：概述工具编排 / 条件分支 / 子 Agent 的设计思路与难点……",
+  },
+  {
+    title: "【占位】Agent 全链路追踪与可观测（Langfuse）",
+    summary: "占位：概述 trace / span 埋点与线上问题定位能力……",
+  },
+];
+
+export const agentProjects: Project[] = [
+  {
+    title: "金融数据分析 Agent（占位 · 待替换）",
+    meta: "自研 Agent · 全栈工程",
+    intro:
+      "面向银行/券商/保险等金融机构的分析 Agent 平台（占位简介，后续替换为真实项目）：以 LangGraph 编排多工具 ReAct 工作流，打通结构化数据查询、指标血缘分析与 RAG 知识库检索，并通过 Langfuse 建立全链路追踪与 LLM-as-Judge 评估体系，形成从需求到上线的工程闭环。",
+    modules: [
+      {
+        chip: "bg-cyan-500/70",
+        label: "Agent 编排 · 可观测与评估体系",
+        parts: [{ items: agentProjectHighlights }],
+      },
+    ],
+    tags: [
+      { name: "LangGraph", accent: true },
+      { name: "FastAPI", accent: true },
+      { name: "Langfuse", accent: true },
+      { name: "LLM-as-Judge", accent: true },
+      { name: "ReAct" },
+      { name: "Tool Calling" },
+      { name: "RAG" },
+      { name: "MCP" },
+      { name: "PostgreSQL" },
+      { name: "SSE" },
+    ],
+  },
+];
+
 // ── 个人实践及发展方向（经典版与新版共用） ──
 export const practiceProfile = {
   title: "技术画像与发展方向",
