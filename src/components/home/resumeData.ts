@@ -115,203 +115,131 @@ export const agentHighlights = [
   },
 ];
 
-export const componentHighlights = [
-  {
-    title: "React Query 驱动的页面级缓存架构",
-    summary:
-      "以页面路径 + API + 查询参数为复合缓存 Key，实现查询条件与 Table 数据的双层缓存，Tab 切换、路由往返零重新请求；配合 dev 模式内置缓存面板，开发者可直接查看缓存内容与失效策略。",
-  },
-  {
-    title: "FMSSearchTable — 查询列表一体化组件",
-    summary:
-      "将「查询条件 + Table 展示 + 分页 + Tab 缓存 + 辅助操作」封装为单一组件，对外暴露极简 API（仅需传入 searchItems + columns + api），开发者交付速度提升数倍。",
-  },
-  {
-    title: "FMSModal — 声明式生命周期弹窗",
-    summary:
-      "将 Modal visible 状态管理下沉至组件内部，开发者仅需关注 open / close / cancel / submit 四个声明式回调，代码集中度与可维护性大幅提升。",
-  },
-  {
-    title: "业务组件 NPM 包发布全链路",
-    summary:
-      "首次在业务组件平台发布财务业务组件 NPM 包，走通「脚手架开发 → 组件构建 → 文档站点部署 → NPM 发布」全流程，并输出标准化操作文档供团队复用。",
-  },
-];
-
-// ── AI Agent 体系化学习与实践（系统学习 · 动手实践，尚未接入生产） ──
-export const learningIntro =
-  "以下为个人在 Python、后端工程与 LLM/Agent 方向利用业余时间自学的学习与实践成果，旨在补齐从前端到 Python 后端、再到 LLM 原理与 Agent 工程的完整能力闭环。";
-
-export type CoursePoint = { title: string; desc: string };
-
-export type Course = {
-  title: string;
-  position: string;
-  points: CoursePoint[];
-  tags: { name: string; accent?: boolean }[];
-};
-
-export const learningCourses: Course[] = [
-  {
-    title: "Python 语言与全栈后端工程",
-    position:
-      "系统性自学 Python 语言核心并贯通企业级后端工程：从对象模型与元编程、asyncio 异步编程，到 FastAPI 三层架构、SQLAlchemy 2.0 异步 ORM 与依赖注入、自动化测试，形成从前端到 Python 后端的完整工程能力。",
-    points: [
-      {
-        title: "深入对象模型与异步编程",
-        desc: "系统掌握元类、装饰器、描述符与魔术方法，理解 type 动态建类与对象创建过程，实现自动注册、单例、惰性计算等机制；并系统学习事件循环、Future、协程与 Task 等 asyncio 运行机制，掌握 gather 等官方 API。",
-      },
-      {
-        title: "完整工程工具链",
-        desc: "全量类型标注、迭代器/生成器、上下文管理器与标准库，配合 pyproject/hatchling 构建发布、uv 依赖与版本管理、uv workspace monorepo 多包组织，具备规范化的 Python 工程协作能力。",
-      },
-      {
-        title: "企业级三层架构与数据层",
-        desc: "FastAPI + 依赖注入（IoC/DI）分层为 api/service/model 三层，统一异常与统一响应、中间件；SQLAlchemy 2.0 异步 ORM + Alembic 数据迁移，覆盖长短事务、CRUD、文件上传（OSS）等真实业务；pytest 单元/集成/E2E 分层测试，覆盖率约 80%。",
-      },
-    ],
-    tags: [
-      { name: "Python", accent: true },
-      { name: "asyncio" },
-      { name: "FastAPI", accent: true },
-      { name: "SQLAlchemy 2.0", accent: true },
-      { name: "Alembic" },
-      { name: "PostgreSQL" },
-      { name: "依赖注入" },
-      { name: "pytest" },
-      { name: "SSE 流式" },
-      { name: "Docker / k8s / CI/CD", accent: true },
-    ],
-  },
-  {
-    title: "LLM 底层原理与自研 Agent",
-    position:
-      "从神经元与 Transformer 原理逐层推导，再逐步搭建可运行的 Agent 工程，亲手打通 LLM → Tool Calling → ReAct → MCP → Skill → 子代理全链路。",
-    points: [
-      {
-        title: "LLM 底层原理推导",
-        desc: "实现 BPE 分词器并训练中文词表，理解词嵌入、注意力与多头 QKV、RoPE、残差归一化；掌握推理侧 Prefill/KV Cache、Temperature、Top-K/Top-P 采样与训练侧 SFT/RLHF/CoT。",
-      },
-      {
-        title: "自研可运行 Agent 包",
-        desc: "分层实现 model / session（会话持久化以命中 prompt cache）/ prompt（Jinja2 系统提示词）/ tool（Pydantic 动态 Schema + @tool 注册表）/ ReAct 主循环 / 事件驱动 listener，驱动 Agent 自主产出代码与架构分析文档。",
-      },
-      {
-        title: "Agent 能力外延",
-        desc: "接入 Ollama 本地模型与 Tavily 搜索构建“Agent 搜索引擎”；实现 Skill 渐进式披露；封装 MCP（JSON-RPC 2.0，stdio/http）Client、用 FastMCP 自建天气服务器并接入；子代理多线程并发编排。",
-      },
-    ],
-    tags: [
-      { name: "Transformer" },
-      { name: "BPE 分词器" },
-      { name: "ReAct", accent: true },
-      { name: "Tool Calling", accent: true },
-      { name: "Pydantic" },
-      { name: "Ollama" },
-      { name: "MCP", accent: true },
-      { name: "Skill" },
-      { name: "子代理" },
-    ],
-  },
-  {
-    title: "LangGraph 工作流开发",
-    position:
-      "基于 LangGraph 构建带记忆、可中断、可动态编排的 AI Agent 工作流，覆盖图状态管理、Checkpointer 持久化、长期记忆、人机协同与子 Agent，并在 Agent Server 上完成接口暴露与容器化生产部署。",
-    points: [
-      {
-        title: "图编排与流程控制",
-        desc: "StateGraph + Reducer/add_messages 状态管理、节点与条件边、循环/并行、Send 动态扇出（map-reduce）与子图/子 Agent 组合。",
-      },
-      {
-        title: "生产级状态与记忆",
-        desc: "Checkpointer/Thread 实现会话快照与时间旅行（replay/fork）；Store 按用户维护长期记忆，在系统提示词中经 mustache 渲染冻结为快照注入，支持记忆复用。",
-      },
-      {
-        title: "人机协同与中断",
-        desc: "interrupt 实现 human-in-the-loop，Agent 在需要时暂停询问用户（ask_user_question）后携带回答继续执行，打通人工审核与自动化执行边界。",
-      },
-      {
-        title: "模型与工具解耦",
-        desc: "按 ContextSchema 动态选择多模型（mock/Anthropic/OpenAI），bind_tools + ToolNode + Tavily 联网搜索/抓取与多工具调度，配置驱动便于测试。",
-      },
-      {
-        title: "Agent Server 生产落地",
-        desc: "LangGraph API Server 暴露 Assistant/Thread/Run/Store/Cron/MCP/A2A 等 REST 接口，Docker + Postgres/Redis 部署，打通 Agent 前后端对接与生产上线链路。",
-      },
-    ],
-    tags: [
-      { name: "LangGraph", accent: true },
-      { name: "StateGraph" },
-      { name: "Checkpointer" },
-      { name: "Human-in-the-loop", accent: true },
-      { name: "Store 长期记忆" },
-      { name: "Send 动态扇出" },
-      { name: "子 Agent" },
-      { name: "Agent Server" },
-    ],
-  },
-];
-
 // ── 个人基础信息（经典版与新版共用） ──
 export const profile = {
   name: "丁凯",
-  role: "高级前端开发工程师",
-  summary: "7 年经验 · 3 年+ 财务系统 · 近2年+ 银行/券商 AI 应用",
+  role: "AI 应用开发工程师",
   email: "1196715913@qq.com",
   phone: "18301926957",
   school: "东华大学 · 全日制硕士（211）",
   skills: [
     {
-      name: "前端",
-      detail: "React · Next.js · Vue · TypeScript · Tailwind",
+      name: "AI 应用开发",
+      items: [
+        "LangGraph",
+        "LangChain",
+        "Deep Agents",
+        "多 Agent 编排",
+        "结构化路由",
+        "Send 扇出",
+        "HITL",
+        "RAG",
+        "Agentic RAG",
+        "Graph RAG",
+        "Tool Calling / MCP",
+        "Skill",
+        "Nacos 治理",
+        "LiteLLM",
+        "MinIO",
+        "Langfuse",
+        "全链路可观测",
+      ],
+    },
+    {
+      name: "前端 / 产品化",
+      items: [
+        "React / Vue",
+        "Next.js / Umi",
+        "TypeScript",
+        "Zustand / Redux Toolkit / Reselect",
+        "TanStack Query",
+        "Tailwind / shadcn/ui / Radix",
+        "Ant Design / Element",
+        "SSE 流式渲染",
+        "React Flow",
+        "WebSocket",
+        "Webpack",
+        "渲染性能优化",
+      ],
     },
     {
       name: "后端 / 数据",
-      detail:
-        "Python FastAPI · Koa2 · Socket.io · PostgreSQL · MySQL · MongoDB",
+      items: [
+        "Python / FastAPI",
+        "Pydantic / SQLAlchemy",
+        "Node.js / Koa / Socket.io",
+        "REST / SSE",
+        "JWT / OAuth",
+        "PostgreSQL / MongoDB / Redis",
+        "Milvus / Neo4j",
+        "阿里云 OSS",
+      ],
     },
     {
-      name: "AI / Agent",
-      detail:
-        "LangGraph · LangChain · DeepAgent · ReAct · Tool Calling · MCP · Skill",
-    },
-    {
-      name: "工程化",
-      detail: "Docker · Webpack · monorepo · CI/CD",
+      name: "运维 / 云服务",
+      items: ["Docker", "CI/CD", "监控告警", "阿里云 OSS", "阿里云沙箱服务"],
     },
   ],
 };
 
 // ── 工作经历（经典版与新版共用） ──
-export type Job = {
-  company: string;
+export type JobStage = {
+  label?: string;
   role: string;
   range: string;
   points: string[];
   tags: string[];
 };
 
+export type Job = {
+  company: string;
+  role: string;
+  range: string;
+  points: string[];
+  tags: string[];
+  note?: string;
+  stages?: JobStage[];
+};
+
 export const jobs: Job[] = [
   {
     company: "江苏红网",
-    role: "高级前端工程师",
+    role: "高级前端工程师 → AI 应用开发工程师",
     range: "2024.04 - 至今",
-    points: [
-      "所在业务线服务银行/券商/基金/保险等金融机构客户，主导其 AI 应用类产品的数据分析、对话交互与工程落地，对接真实业务口径需求。",
-      "独立从零设计并全栈开发 IM 企业即时通讯系统（Next.js 15 + Koa + Socket.io + MongoDB）。",
-      "主导自研智能分析 Agent 产品 SSE 流式对话部分，实现按事件类型增量渲染的流式响应链路。",
-      "主导 Dify 开源平台二次开发，深度改造 Chat / Workflow / 知识库模块。",
-      "此外还负责服务金融机构客户的若干常规业务系统的前端开发与维护。",
+    note: "内部转岗",
+    points: [],
+    tags: [],
+    stages: [
+      {
+        role: "AI 应用开发工程师",
+        range: "2025.08 - 至今",
+        points: [
+          "负责金融 AI 应用的多 Agent 编排：基于 Deep Agents 构建主 Agent 与检索/执行等子 Agent，结合 LangGraph Server + Python/FastAPI 完成任务规划、工具调用、异步子代理协作与状态/记忆管理，服务银行/券商/基金/保险客户。",
+          "负责子 Agent 的编排与调度：基于 LangGraph 将检索、执行等能力拆分为独立子 Agent/子图并注册为服务入口，通过结构化路由按任务类型分发、Send 动态扇出并汇总结果，结合 Checkpointer 会话快照与 Store 长期记忆，实现可中断、可恢复的多 Agent 协作流程。",
+          "负责 RAG 知识库：文档解析、结构化切片、Embedding、Milvus 稠密 + BM25 稀疏混合检索，支持 RRF/加权/模型重排；实现 Agentic RAG 多跳补查。",
+          "负责 AI 基础建设：统一模型接入与 API 网关、MinIO 对象存储；基于 Nacos AI Registry 统一管理 AgentSpec、Prompt、Skill、MCP 与沙箱配置，支持注册发现与动态加载；基于 OpenSandbox 建设用户级隔离的沙箱执行环境，提供私有可写卷与共享只读卷，结合 LangGraph 运行时标准化新 AI 应用的接入与交付流程。",
+          "负责评估与可观测：Langfuse trace + 评估集 + LLM-as-Judge/规则评估，建立回归门槛，定位幻觉、召回与工具调用失败；同时建立 Agent Benchmark 回归基线与成本/线上评估/异常告警流水线，接入企业 SMS 多渠道通知，持续跟踪效果与稳定性。",
+        ],
+        tags: ["Python", "FastAPI", "LangGraph", "Deep Agents", "LangChain", "RAG", "Milvus", "MinIO", "OpenSandbox", "Nacos", "LiteLLM", "Langfuse"],
+      },
+      {
+        role: "高级前端工程师",
+        range: "2024.04 - 2025.07",
+        points: [
+          "负责金融 B 端产品前端开发，覆盖多个业务系统、从需求评审到上线验收全流程；后续延伸至银行/券商 AI 应用前端。",
+          "主导 SSE 流式产品化：多类型事件流渲染，Agent 回答、图表、表格按事件增量呈现。",
+          "主导 Dify 平台二次开发：Chat / Workflow / 知识库模块，保持与上游版本可持续合并。",
+        ],
+        tags: ["React", "Next.js", "TypeScript", "SSE", "Dify"],
+      },
     ],
-    tags: ["Next.js", "React", "Socket.io", "Koa", "MongoDB", "umi", "Vue"],
   },
   {
     company: "SHEIN",
     role: "高级前端工程师",
     range: "2021.01 - 2024.03",
     points: [
-      "负责财务前端 5 个 B 端业务系统的功能开发与维护，覆盖需求评审到上线验收全流程。",
-      "整合跨系统相同模块，封装通用组件与工具函数，统一多系统样式与组件规范。",
+      "负责财务前端 5 个 B 端业务系统，覆盖需求评审到上线；整合跨系统通用模块，统一组件与样式规范。",
     ],
     tags: ["React", "TypeScript", "组件库"],
   },
@@ -320,8 +248,7 @@ export const jobs: Job[] = [
     role: "软件实施 / Web 前端工程师",
     range: "2019.04 - 2020.12",
     points: [
-      "使用 Vue / Vuex / Vue Router 重构门户界面，优化性能与用户体验。",
-      "参与西门子 Teamcenter PLM 软件实施，覆盖产品全生命周期数据与流程。",
+      "使用 Vue / Vuex / Vue Router 重构门户界面；参与西门子 Teamcenter PLM 软件实施。",
     ],
     tags: ["Vue", "Vuex", "PLM"],
   },
@@ -352,8 +279,8 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    title: "金融数据分析 Agent（自研产品）",
-    meta: "自研产品 · 前端架构",
+    title: "智能问数Agent（自研产品）",
+    meta: "自研产品 · Agent 产品化",
     intro:
       "面向银行/券商/保险等金融机构业务分析场景的智能分析产品：前端自研多类型 SSE 流式渲染引擎，Agent 的回答在单条 SSE 连接内按事件类型增量推送并渲染 Markdown 正文/图表/表格等内容形态；指标侧提供血缘图谱，实现指标→字段→表全链路依赖追踪。",
     modules: [
@@ -373,7 +300,6 @@ export const projects: Project[] = [
       { name: "dagre" },
       { name: "Zustand" },
       { name: "Ant Design" },
-      { name: "WebSocket" },
     ],
   },
   {
@@ -459,85 +385,223 @@ export const projects: Project[] = [
       { name: "maskdata" },
     ],
   },
+];
+
+// ── Agent 项目 ──
+export const dealPilotRagIndexHighlights: HighlightItem[] = [
   {
-    title: "财务业务组件库 FMS",
-    meta: "业务组件 · NPM 包",
-    intro:
-      "针对财务前端多系统组件版本不一致、辅助功能重复编写、Tab 缓存难维护等痛点，封装 FMSSearchTable 与 FMSModal 两个核心业务组件，首次将业务组件发布为公司级 NPM 包。",
-    modules: [
-      {
-        chip: "bg-orange-500/70",
-        label: "FMSSearchTable & FMSModal & NPM 发布",
-        parts: [{ items: componentHighlights }],
-      },
-    ],
-    tags: [
-      { name: "React", accent: true },
-      { name: "React Query", accent: true },
-      { name: "TypeScript" },
-      { name: "Axios" },
-      { name: "Ant Design" },
-      { name: "dumi" },
-      { name: "semantic-release" },
-      { name: "commitlint" },
-    ],
+    title: "飞书文档多模态归一化",
+    summary:
+      "聚焦飞书知识库 Docx，解析正文、表格、图片、代码等块类型；图片经 VL 模型生成文字描述并落 MinIO 私有桶，正文与表格统一归一化为带标题层级和来源元数据的标准文档；结合 revision_id 版本对比实现实时增量索引与旧版本清理。",
+  },
+  {
+    title: "BlockNode Tree 结构化切片",
+    summary:
+      "以 BlockNode Tree 按标题层级组织飞书 Docx，正文/表格/图片/代码分别切片，表格保留表头并按行切分，图片整体保留并生成描述；确保每个切片语义完整、来源可溯、版本可控，可通过切片间父子引用还原上下文，索引时以 LangGraph Send 动态扇出、默认 3 并发。",
+  },
+  {
+    title: "Milvus Schema 兼容性预检与原地同步",
+    summary:
+      "Collection 变更前做全量预检，支持字段新增、字符串扩容及历史元数据局部回填；仅允许 nullable 标量新增与 VARCHAR 扩容，避免维度/类型/分析器变化导致线上集合不可用。",
+  },
+  {
+    title: "全量文档 + 精选知识图谱双路索引",
+    summary:
+      "针对全量知识图谱抽取成本高、维护投入大的问题，设计全量文档索引 + 精选知识图谱的双路索引：全量文档进入 Milvus，围绕高价值业务数据抽取实体与关系存入 Neo4j，按需构建社区，并支持管理后台人工录入实体关系，兼顾知识覆盖、关系表达与建设成本。",
   },
 ];
 
-// ── Agent 项目（占位，后续替换为真实项目内容） ──
-export const agentProjectHighlights: HighlightItem[] = [
+export const dealPilotRagRetrievalHighlights: HighlightItem[] = [
   {
-    title: "评估上下文压缩与成本治理（Langfuse · LLM-as-Judge）",
+    title: "稠密 + BM25 混合检索与多策略重排",
     summary:
-      "难点：LLM-as-Judge 评估器直接消费完整 Agent trace，输入塞满工具调用、工具结果与中间 ReAct 步骤，token 巨大；判官被内部过程噪音干扰，评的是“内部过程”而非“用户实际看到的答复”，评估失真且成本高。方案：扩展 MainAgentState 并实现 @after_agent 中间件，按“用户可见性”过滤消息——保留用户输入、最终答复与结构化响应，剔除带 tool_use 的中间 AI 消息与中间 ToolMessage，生成仅含用户可见内容的 turn_summary 作为评估器 {{context}}。效果：评估输入 token 与成本大幅下降，判官只评判用户可见内容，更贴近真实体验。",
+      "基于 HNSW 建立 Milvus ANN 索引，实现稠密向量 + BM25 稀疏倒排的多路召回，再基于 RRF / Weighted / Model 三种策略 Rerank；封装 milvus_search / milvus_query 工具，检索 Agent 输出 status/answer/sources/gaps 结构化结果。",
   },
   {
-    title: "【占位】多工具 ReAct 工作流编排",
+    title: "Role Metadata 权限检索",
     summary:
-      "占位：概述工具编排 / 条件分支 / 子 Agent 的设计思路与难点……",
+      "Milvus Entity 附带 Role Metadata，检索时强制新增角色筛选条件，实现严格带权限的数据检索，避免越权召回。",
   },
   {
-    title: "【占位】Agent 全链路追踪与可观测（Langfuse）",
-    summary: "占位：概述 trace / span 埋点与线上问题定位能力……",
+    title: "Agentic RAG 多跳补查",
+    summary:
+      "构建「首轮材料注入＋自主检索＋结构补查」的多跳推理机制：首轮检索材料经中间件注入，Agent 根据已有证据改写查询、限定来源，并沿父块与引用块补充上下文，形成「首轮注入—自主补查—综合回答」的闭环。",
+  },
+  {
+    title: "Graph RAG × Agentic RAG 协同",
+    summary:
+      "针对客户、产品、项目等关联信息分散、单次文档检索难以获取完整证据的问题，设计文档检索 + 图谱检索双路召回：并行检索 Milvus 文档片段与 Neo4j 图谱知识，通过向量匹配定位相关实体及可选社区信息；并在文档搜索、切片补查工具之外增加图谱查询工具，由 Agent 根据证据缺口自主选择检索路径，形成「首轮双路召回—按需多轮补查—综合证据回答」的检索闭环。",
+  },
+];
+
+export const dealPilotPlatformHighlights: HighlightItem[] = [
+  {
+    title: "主/子 Agent 编排与人工中断",
+    summary:
+      "基于 LangGraph Server + Deep Agents 搭建主 Agent 与检索子 Agent：主 Agent 负责任务规划与工具调用，检索子 Agent 负责知识库检索与结构化输出；关键节点可通过 interrupt / ask_user_question 中断等待人工确认，打通人工审核与自动化执行的边界。",
+  },
+  {
+    title: "多智能体协作",
+    summary:
+      "采用异步子代理 + 结构化路由 + Send 动态扇出 + 汇总的协作模型，按任务类型分发到不同 Agent，并由主 Agent 统一汇总结果，兼顾并行效率与结果一致性。",
+  },
+  {
+    title: "Nacos 配置驱动装配",
+    summary:
+      "从 Nacos 动态加载 AgentSpec / Prompt / Skill / MCP 与沙箱配置，按配置组装模型、工具与子 Agent；实现「并发请求合并 + 过期旧值先返回、后台异步刷新」的缓存机制，降低远程配置依赖对请求延迟的影响。",
+  },
+  {
+    title: "Skill 包安全下发与热更新",
+    summary:
+      "针对 Skill 包体积大、多 Agent 共享且需热更新的场景，在共享沙箱内直连 Nacos 下载解压，避免大文件经过 Agent 进程；用内容 SHA-256 做幂等判断，临时目录 + 原子替换 + 失败回滚保证一致性，配合进程内锁 / 文件锁防并发，并校验名称防路径穿越；普通用户沙箱只读挂载，兼顾热更新、隔离与安全。",
+  },
+  {
+    title: "HITL 权限与长上下文治理",
+    summary:
+      "通过 interrupt_on 实现工具审批，结合文件权限、上下文摘要与 TodoList 计划，控制高风险操作并压缩长上下文，让 Agent 在受控边界内完成多步任务。",
+  },
+];
+
+export const dealPilotEvalHighlights: HighlightItem[] = [
+  {
+    title: "Langfuse 全链路可观测",
+    summary:
+      "Langfuse CallbackHandler 注入 trace/user/session，父子 trace/span 关联，记录模型调用、工具调用与耗时；支持过期 trace 定时清理，便于定位幻觉、召回与工具调用失败。",
+  },
+  {
+    title: "Agent Benchmark 回归基线与 LLM-as-Judge 评估",
+    summary:
+      "建立 Agent Benchmark 回归基线，基于 Langfuse 数据集持续纳入真实场景评估用例，用 LLM-as-Judge 评估 correctness / completeness（阈值 0.8），接入 pytest 跑回归，任一用例未达标即失败；为每轮迭代提供可对照、可追溯的效果评估与回归依据，避免效果回退。",
+  },
+  {
+    title: "成本 / 线上评估 / 异常告警流水线",
+    summary:
+      "构建覆盖成本、线上评估和异常错误的告警流水线，接入企业 SMS 系统实现多渠道通知，提升关键问题的发现与响应效率。",
+  },
+  {
+    title: "评估与线上 Trace 跨服务串联",
+    summary:
+      "Benchmark 跑实验时从 Langfuse 当前 span 取 trace_id / parent_span_id，随任务下发给 LangGraph Server；Agent 侧用 CallbackHandler 以该 trace 为父上下文继续打点，并注入 session / user / environment，使评估结果可一路下钻到真实 Agent 执行 trace，快速定位是检索、工具调用还是模型回答导致失分。",
+  },
+];
+
+export const dealPilotInfraHighlights: HighlightItem[] = [
+  {
+    title: "LiteLLM 模型与网关双层并发控制",
+    summary:
+      "模型侧采用熔断与回退机制保障调用连续性，网关侧通过请求排队与等待缓解瞬时流量压力，提升服务可用性。",
+  },
+  {
+    title: "会话粘性路由与 KV Cache 复用",
+    summary:
+      "以会话/线程 ID 作为路由标识，将同一会话的请求固定到同一模型部署，避免跨部署或跨模型切换导致 KV Cache 失效；在保证路由一致性的同时复用前缀缓存，提升会话请求的推理效率，减少重复计算带来的算力消耗与调用成本。",
+  },
+  {
+    title: "Nacos AI Registry 统一治理",
+    summary:
+      "引入 Nacos AI Registry 统一治理 Prompt、Skill、MCP 与 AgentSpec，打通 AI 能力的注册发现与动态配置，降低资源分散和版本割裂带来的治理成本。",
+  },
+  {
+    title: "OpenSandbox 用户级隔离执行环境",
+    summary:
+      "基于 OpenSandbox 构建用户级隔离执行环境，普通用户使用私有可写 /root 与共享只读 /shared；通过私有卷持久化与共享卷只读复用，兼顾 Agent 执行隔离、工作数据延续与公共能力复用。",
+  },
+  {
+    title: "产物部署与对象存储",
+    summary:
+      "沙箱内直传 MinIO 并按用户对象前缀隔离，支持生成默认 1 小时的 MinIO GET 预签名链接完成产物交付；RAG 文档中的图片统一存入 MinIO 私有桶，切片记录桶名与对象键，检索时通过预签名链接还原并展示图片，兼顾可访问性与私有隔离。",
+  },
+];
+
+export const dealPilotFeishuHighlights: HighlightItem[] = [
+  {
+    title: "飞书长连接隔离",
+    summary:
+      "以独立子进程承载飞书 WebSocket 长连接，子进程收到事件后通过进程间管道（IPC）回传主进程，由分发器异步处理，避免长连接阻塞 Agent Server 的事件循环；监听器单例幂等，并随 FastAPI 生命周期启停。",
+  },
+  {
+    title: "飞书消息接入与会话绑定",
+    summary:
+      "飞书用户发来消息后，取发送者的 open_id 作为用户身份并签发短期 JWT；再按「用户 + Agent」复用同一个会话线程，把请求排队交给 Agent Server 执行；执行状态和增量回复实时更新到与发送者的单聊卡片。",
+  },
+  {
+    title: "流式回复与卡片增量刷新",
+    summary:
+      "主 Agent 和检索子 Agent 都在逐字流式输出：系统把每次模型调用的片段拼成完整正文并去重，再把「思考中 / 调用工具 / 回复中 / 完成 / 失败」实时显示到飞书卡片；流结束后再查一次任务的真实状态，避免把超时或中断误报成完成；卡片每 200ms 合并刷新一次，只提交最新内容，避免高频请求积压。",
   },
 ];
 
 export const agentProjects: Project[] = [
   {
-    title: "金融数据分析 Agent（占位 · 待替换）",
-    meta: "自研 Agent · 全栈工程",
+    title: "东北证券 — 企业知识库 RAG 与 Agent 平台",
+    meta: "券商知识库重构 · Agent 后端",
     intro:
-      "面向银行/券商/保险等金融机构的分析 Agent 平台（占位简介，后续替换为真实项目）：以 LangGraph 编排多工具 ReAct 工作流，打通结构化数据查询、指标血缘分析与 RAG 知识库检索，并通过 Langfuse 建立全链路追踪与 LLM-as-Judge 评估体系，形成从需求到上线的工程闭环。",
+      "面向东北证券投研、合规等业务条线的企业知识库与智能问答平台。在 Dify 版知识库受限于切片粒度、混合检索、权限隔离、增量索引与评估闭环的背景下，自研重构为多源归一化 + 结构化切片 + Milvus 混合检索 + Agentic RAG 的知识底座，并叠加多 Agent 编排、可观测评估、模型网关与飞书协作，服务券商内部知识检索与问答场景。",
     modules: [
       {
         chip: "bg-cyan-500/70",
-        label: "Agent 编排 · 可观测与评估体系",
-        parts: [{ items: agentProjectHighlights }],
+        label: "模块一：RAG 检索",
+        parts: [
+          {
+            head: "索引构建",
+            headColor: "bg-cyan-500/70",
+            items: dealPilotRagIndexHighlights,
+          },
+          {
+            head: "检索与推理",
+            headColor: "bg-teal-500/70",
+            items: dealPilotRagRetrievalHighlights,
+          },
+        ],
+      },
+      {
+        chip: "bg-emerald-500/70",
+        label: "模块二：Agent 编排与平台底座",
+        parts: [{ items: dealPilotPlatformHighlights }],
+      },
+      {
+        chip: "bg-amber-500/70",
+        label: "模块三：观测与评估",
+        parts: [{ items: dealPilotEvalHighlights }],
+      },
+      {
+        chip: "bg-violet-500/70",
+        label: "模块四：基础建设",
+        parts: [{ items: dealPilotInfraHighlights }],
+      },
+      {
+        chip: "bg-sky-500/70",
+        label: "模块五：与飞书链接",
+        parts: [{ items: dealPilotFeishuHighlights }],
       },
     ],
     tags: [
       { name: "LangGraph", accent: true },
-      { name: "FastAPI", accent: true },
+      { name: "Deep Agents", accent: true },
+      { name: "RAG", accent: true },
+      { name: "Milvus", accent: true },
+      { name: "BM25", accent: true },
+      { name: "Agentic RAG", accent: true },
+      { name: "Graph RAG", accent: true },
+      { name: "Neo4j" },
+      { name: "MinerU" },
+      { name: "PaddleOCR" },
+      { name: "LiteLLM", accent: true },
+      { name: "Nacos", accent: true },
+      { name: "OpenSandbox", accent: true },
+      { name: "MinIO", accent: true },
       { name: "Langfuse", accent: true },
-      { name: "LLM-as-Judge", accent: true },
-      { name: "ReAct" },
-      { name: "Tool Calling" },
-      { name: "RAG" },
+      { name: "JWT" },
+      { name: "Feishu OpenAPI" },
+      { name: "HITL", accent: true },
+      { name: "Sub Agent", accent: true },
       { name: "MCP" },
-      { name: "PostgreSQL" },
-      { name: "SSE" },
+      { name: "SMS" },
+      { name: "KV Cache" },
+      { name: "Python" },
+      { name: "FastAPI" },
     ],
   },
 ];
 
-// ── 个人实践及发展方向（经典版与新版共用） ──
-export const practiceProfile = {
-  title: "技术画像与发展方向",
-  intro:
-    "7 年前端经验，其中 3 年+ 深耕财务 B 端系统、近 2 年+ 服务银行/券商等金融机构的数据与 AI 应用，理解金融业务对数据口径与准确性的要求，沉淀了扎实的工程化与产品化能力；近一年系统自学 Python 后端与 LLM/Agent 工程并全程动手实践，已补齐「前端 → Python 后端 → LLM 原理与 Agent 工程」的完整闭环。发展方向聚焦",
-  highlight: "AI 应用与 Agent 工程",
-  outro:
-    "：以 AI 应用的工程化落地为目标，将前端体验优势与 LLM/Agent、Python 后端能力结合，可独立承担从需求到上线的全链路交付。",
-};
 
-export const learningTitle = "AI Agent 体系化学习与实践";

@@ -7,10 +7,8 @@ import {
   GraduationCap,
   Briefcase,
   FolderKanban,
-  Rocket,
   Bot,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -19,13 +17,9 @@ import {
   jobs,
   projects,
   agentProjects,
-  practiceProfile,
-  learningTitle,
-  learningIntro,
-  learningCourses,
   type Project,
 } from "./resumeData";
-import { ProjectCard } from "./section-ui";
+import { JobBody, ProjectCard } from "./section-ui";
 
 const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -35,7 +29,7 @@ function LeftPanel() {
       <div className="flex flex-col items-center text-center gap-1">
         <div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-border shadow-md mb-1">
           <Image
-            src={`${mediaBasePath}/avatars/avater.jpg`}
+            src={`${mediaBasePath}/avatars/avatar.webp`}
             alt={profile.name}
             width={96}
             height={96}
@@ -45,8 +39,6 @@ function LeftPanel() {
         <h2 className="text-xl font-bold text-foreground">{profile.name}</h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
           {profile.role}
-          <br />
-          {profile.summary}
         </p>
       </div>
 
@@ -92,8 +84,15 @@ function LeftPanel() {
           {profile.skills.map((s) => (
             <div key={s.name}>
               <div className="font-semibold text-foreground/90">{s.name}</div>
-              <div className="text-muted-foreground leading-relaxed mt-0.5">
-                {s.detail}
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {s.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-relaxed text-foreground/80"
+                  >
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
           ))}
@@ -107,31 +106,27 @@ function WorkTab() {
   return (
     <div className="space-y-4">
       {jobs.map((job) => (
-        <Card key={job.company} className="shadow-none border-border/60">
+        <Card key={`${job.company}-${job.range}`} className="shadow-none border-border/60">
           <CardContent className="pt-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base font-semibold text-foreground">
                   {job.company}
                 </h3>
-                <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                  {job.role}
-                </span>
+                {job.note && (
+                  <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">
+                    {job.note}
+                  </span>
+                )}
+                {!job.stages && (
+                  <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                    {job.role}
+                  </span>
+                )}
               </div>
               <span className="text-xs text-muted-foreground">{job.range}</span>
             </div>
-            <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground leading-relaxed list-disc list-inside">
-              {job.points.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {job.tags.map((t) => (
-                <Badge key={t} variant="secondary">
-                  {t}
-                </Badge>
-              ))}
-            </div>
+            <JobBody job={job} />
           </CardContent>
         </Card>
       ))}
@@ -153,81 +148,10 @@ function ProjectTab({ list }: { list: Project[] }) {
   );
 }
 
-function PracticeTab() {
-  return (
-    <div className="space-y-4">
-      <Card className="shadow-none border-border/60">
-        <CardContent>
-          <h3 className="text-base font-semibold text-foreground">
-            {practiceProfile.title}
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            {practiceProfile.intro}
-            <b className="text-foreground">{practiceProfile.highlight}</b>
-            {practiceProfile.outro}
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-none border-border/60">
-        <CardContent>
-          <h3 className="text-base font-semibold text-foreground">
-            {learningTitle}
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            {learningIntro}
-          </p>
-        </CardContent>
-      </Card>
-
-      {learningCourses.map((course) => (
-        <Card key={course.title} className="shadow-none border-border/60">
-          <CardContent>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-base font-semibold text-foreground">
-                {course.title}
-              </h3>
-              <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                系统学习 · 动手实践
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {course.position}
-            </p>
-            <ul className="mt-3 space-y-2">
-              {course.points.map((p) => (
-                <li key={p.title} className="text-sm leading-relaxed">
-                  <span className="font-medium text-foreground/90">
-                    {p.title}
-                  </span>
-                  <span className="block text-muted-foreground mt-0.5">
-                    {p.desc}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="flex flex-wrap gap-2 mt-4">
-              {course.tags.map((t) => (
-                <Badge
-                  key={t.name}
-                  variant={t.accent ? "default" : "secondary"}
-                >
-                  {t.name}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
 const tabMeta = [
-  { value: "work", label: "工作经历", icon: Briefcase },
-  { value: "project", label: "项目经历", icon: FolderKanban },
-  { value: "practice", label: "个人实践及发展方向", icon: Rocket },
   { value: "agent", label: "Agent 项目", icon: Bot },
+  { value: "work", label: "工作经历", icon: Briefcase },
+  { value: "project", label: "其他项目", icon: FolderKanban },
 ];
 
 export default function NewResumeLayout() {
@@ -237,7 +161,7 @@ export default function NewResumeLayout() {
         <LeftPanel />
 
         <div className="rounded-2xl border border-border/60 bg-card shadow-sm px-5 py-5 md:px-7">
-          <Tabs defaultValue="work" className="w-full">
+          <Tabs defaultValue="agent" className="w-full">
             <TabsList className="w-full h-auto gap-1 flex flex-wrap md:flex-nowrap">
               {tabMeta.map((t) => {
                 const Icon = t.icon;
@@ -259,9 +183,6 @@ export default function NewResumeLayout() {
             </TabsContent>
             <TabsContent value="project" className="mt-4">
               <ProjectTab list={projects} />
-            </TabsContent>
-            <TabsContent value="practice" className="mt-4">
-              <PracticeTab />
             </TabsContent>
             <TabsContent value="agent" className="mt-4">
               <ProjectTab list={agentProjects} />

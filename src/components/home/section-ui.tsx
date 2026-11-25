@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Project } from "./resumeData";
+import type { Job, Project } from "./resumeData";
 
 export function HighlightSection({
   items,
@@ -21,6 +21,62 @@ export function HighlightSection({
         </div>
       ))}
     </div>
+  );
+}
+
+export function JobBody({ job }: { job: Job }) {
+  if (job.stages?.length) {
+    return (
+      <div className="mt-3 space-y-4">
+        {job.stages.map((stage, si) => (
+          <div
+            key={`${stage.role}-${stage.range}`}
+            className={si > 0 ? "pt-4 border-t border-border/50" : ""}
+          >
+            <div className="flex items-center gap-2 flex-wrap">
+              {stage.label && (
+                <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">
+                  {stage.label}
+                </span>
+              )}
+              <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                {stage.role}
+              </span>
+              <span className="text-xs text-muted-foreground">{stage.range}</span>
+            </div>
+            <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground leading-relaxed list-disc list-inside">
+              {stage.points.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
+            </ul>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {stage.tags.map((t) => (
+                <Badge key={t} variant="secondary">
+                  {t}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground leading-relaxed list-disc list-inside">
+        {job.points.map((p, i) => (
+          <li key={i}>{p}</li>
+        ))}
+      </ul>
+      <div className="flex flex-wrap gap-2 mt-3">
+        {job.tags.map((t) => (
+          <Badge key={t} variant="secondary">
+            {t}
+          </Badge>
+        ))}
+      </div>
+    </>
   );
 }
 
