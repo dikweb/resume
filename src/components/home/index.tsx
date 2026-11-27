@@ -61,7 +61,7 @@ export default function Home() {
 
 export function ClassicResume() {
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-4 md:py-5">
+    <div className="classic-resume w-full max-w-4xl mx-auto px-4 py-4 md:py-5">
       {/* ── Header ── */}
       <header className="flex flex-col items-center text-center mb-4">
         <div className="relative mb-2">
@@ -109,10 +109,10 @@ export function ClassicResume() {
 
       {/* ── 专业技能 ── */}
       <section className="mb-6">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-2 border-b border-border/60 pb-1">
           专业技能
         </h2>
-        <Card className="shadow-none border-border/60 hover:border-border transition-colors">
+        <Card className="border-0 shadow-none">
           <CardContent className="pt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2">
             {profile.skills.map((s) => (
               <div key={s.name} className="text-sm">
@@ -135,11 +135,11 @@ export function ClassicResume() {
 
       {/* ── Work Experience ── */}
       <section className="mb-6">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-2 border-b border-border/60 pb-1">
           工作经历
         </h2>
 
-        <Card className="shadow-none border-border/60 hover:border-border transition-colors">
+        <Card className="border-0 shadow-none">
           <CardContent>
             {conciseJobs.map((job, idx) => (
               <div
@@ -148,29 +148,27 @@ export function ClassicResume() {
                   idx > 0 ? "pt-4 mt-4 border-t border-border/50" : "pt-2"
                 }
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 w-full">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h3 className="text-base font-semibold text-foreground">
-                        {job.company}
-                      </h3>
-                      {job.note && (
-                        <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">
-                          {job.note}
-                        </span>
-                      )}
-                      {!job.stages && (
-                        <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                          {job.role}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {job.range}
-                    </p>
-                    <JobBody job={job} />
-                  </div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <h3 className="text-base font-semibold text-foreground">
+                    {job.company}
+                  </h3>
+                  {job.note && (
+                    <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">
+                      {job.note}
+                    </span>
+                  )}
+                  {!job.stages && (
+                    <>
+                      <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                        {job.role}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {job.range}
+                      </span>
+                    </>
+                  )}
                 </div>
+                <JobBody job={job} />
               </div>
             ))}
           </CardContent>
@@ -179,26 +177,34 @@ export function ClassicResume() {
 
       {/* ── Agent 项目 ── */}
       <section className="mb-6">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-2 border-b border-border/60 pb-1">
           Agent 项目
         </h2>
 
         <div className="space-y-4">
           {conciseAgentProjects.map((proj) => (
-            <ProjectCard key={proj.title} project={proj} />
+            <ProjectCard
+              key={proj.title}
+              project={proj}
+              className="border-0 shadow-none"
+            />
           ))}
         </div>
       </section>
 
       {/* ── Project Experience ── */}
       <section className="mb-6">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-2 border-b border-border/60 pb-1">
           其他项目
         </h2>
 
         <div className="space-y-4">
           {conciseProjects.map((proj) => (
-            <ProjectCard key={proj.title} project={proj} />
+            <ProjectCard
+              key={proj.title}
+              project={proj}
+              className="border-0 shadow-none"
+            />
           ))}
         </div>
       </section>

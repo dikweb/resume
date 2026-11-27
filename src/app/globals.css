@@ -120,6 +120,16 @@
   }
 }
 
+/* 长文版：技术标签字号略小于正文 */
+.classic-resume [data-slot="badge"] {
+  font-size: 0.6875rem;
+}
+
+/* 长文版：去掉卡片白底，避免在灰色页面上仍像方块 */
+.classic-resume [data-slot="card"] {
+  background: transparent;
+}
+
 /* ── A4 打印样式（/pdf 打印版专用） ── */
 @media print {
   @page {
@@ -190,8 +200,8 @@
   .pdf-root section {
     margin-bottom: 0.5rem !important;
   }
+  /* 章节标题保持大于公司名（不压缩字号），下划线作为分隔 */
   .pdf-root h2 {
-    font-size: 0.9rem !important;
     margin-bottom: 0.3rem !important;
     padding-bottom: 2px !important;
     border-bottom: 1px solid #e5e7eb !important;
@@ -200,14 +210,14 @@
     page-break-after: avoid;
   }
 
-  /* 卡片保留细边框+小圆角，恢复结构感（去阴影） */
+  /* 去掉卡片矩形边框，避免与标题下划线重复 */
   .pdf-root [data-slot="card"] {
     display: block !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 6px !important;
+    border: none !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
     gap: 0 !important;
-    padding: 2px 6px !important;
+    padding: 0 !important;
   }
   .pdf-root [data-slot="card-content"] {
     padding-left: 0 !important;
@@ -223,6 +233,12 @@
   .pdf-root .text-xs {
     font-size: 0.62rem !important;
     line-height: 1.25 !important;
+  }
+  /* 技术标签比正文再小一点 */
+  .pdf-root [data-slot="badge"] {
+    font-size: 0.56rem !important;
+    line-height: 1.2 !important;
+    padding: 1px 4px !important;
   }
   .pdf-root .text-muted-foreground {
     color: #4b5563 !important;
