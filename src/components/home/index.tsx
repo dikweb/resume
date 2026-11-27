@@ -61,10 +61,10 @@ export default function Home() {
 
 export function ClassicResume() {
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-10">
+    <div className="w-full max-w-4xl mx-auto px-4 py-4 md:py-5">
       {/* ── Header ── */}
-      <header className="flex flex-col items-center text-center mb-8">
-        <div className="relative mb-4">
+      <header className="flex flex-col items-center text-center mb-4">
+        <div className="relative mb-2">
           <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-border shadow-lg">
             <Image
               src={`${mediaBasePath}/avatars/avatar.webp`}
@@ -83,7 +83,7 @@ export function ClassicResume() {
           {profile.role}
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-3 text-sm text-muted-foreground">
           <a
             href={`mailto:${profile.email}`}
             className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
@@ -105,15 +105,15 @@ export function ClassicResume() {
         </div>
       </header>
 
-      <Separator className="mb-8" />
+      <Separator className="mb-4" />
 
       {/* ── 专业技能 ── */}
-      <section className="mb-12">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-5">
+      <section className="mb-6">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
           专业技能
         </h2>
         <Card className="shadow-none border-border/60 hover:border-border transition-colors">
-          <CardContent className="pt-4 grid sm:grid-cols-2 gap-x-8 gap-y-4">
+          <CardContent className="pt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2">
             {profile.skills.map((s) => (
               <div key={s.name} className="text-sm">
                 <div className="font-semibold text-foreground">{s.name}</div>
@@ -134,8 +134,8 @@ export function ClassicResume() {
       </section>
 
       {/* ── Work Experience ── */}
-      <section className="mb-12">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-5">
+      <section className="mb-6">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
           工作经历
         </h2>
 
@@ -145,7 +145,7 @@ export function ClassicResume() {
               <div
                 key={`${job.company}-${job.range}`}
                 className={
-                  idx > 0 ? "pt-6 mt-6 border-t border-border/50" : "pt-2"
+                  idx > 0 ? "pt-4 mt-4 border-t border-border/50" : "pt-2"
                 }
               >
                 <div className="flex items-start justify-between gap-4">
@@ -178,8 +178,8 @@ export function ClassicResume() {
       </section>
 
       {/* ── Agent 项目 ── */}
-      <section className="mb-12">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-5">
+      <section className="mb-6">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
           Agent 项目
         </h2>
 
@@ -191,8 +191,8 @@ export function ClassicResume() {
       </section>
 
       {/* ── Project Experience ── */}
-      <section className="mb-12">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-5">
+      <section className="mb-6">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">
           其他项目
         </h2>
 

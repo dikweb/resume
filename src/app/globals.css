@@ -124,7 +124,7 @@
 @media print {
   @page {
     size: A4;
-    margin: 12mm 12mm;
+    margin: 6mm 8mm;
   }
 
   html,
@@ -136,45 +136,115 @@
     min-height: 0 !important;
   }
 
+  /* 去掉容器留白，占满页宽 */
   .pdf-root .max-w-4xl {
-    max-width: none;
-    padding: 0;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
+  /* 头部压缩 */
+  .pdf-root header {
+    margin-bottom: 0.4rem !important;
+  }
+  .pdf-root header .mb-4 {
+    margin-bottom: 0.25rem !important;
+  }
+  .pdf-root header h1 {
+    font-size: 1.15rem !important;
+    line-height: 1.2 !important;
+  }
+  .pdf-root header p {
+    margin-top: 0.1rem !important;
+    font-size: 0.78rem !important;
+  }
+  .pdf-root header .mt-4 {
+    margin-top: 0.25rem !important;
+  }
+  .pdf-root [data-slot="separator"] {
+    margin-bottom: 0.4rem !important;
+  }
+  .pdf-root header .w-20 {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+  .pdf-root header img {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* 技能标签多栏排布，减少高度 */
+  .pdf-root [data-slot="card-content"].grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  /* 区块间距 */
   .pdf-root section {
-    margin-bottom: 1.1rem;
+    margin-bottom: 0.5rem !important;
   }
-
   .pdf-root h2 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.25rem !important;
     break-after: avoid;
     page-break-after: avoid;
   }
 
+  /* 卡片去边框、去内边距、去 flex gap */
   .pdf-root [data-slot="card"] {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    gap: 0;
-    padding-block: 0.35rem;
+    display: block !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    gap: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .pdf-root [data-slot="card-content"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0.1rem !important;
   }
 
-  .pdf-root .mb-8 {
-    margin-bottom: 1.25rem;
+  /* 全局正文密度 */
+  .pdf-root .text-sm {
+    font-size: 0.72rem !important;
+    line-height: 1.3 !important;
+  }
+  .pdf-root .text-xs {
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
+  }
+  .pdf-root li,
+  .pdf-root p {
+    line-height: 1.35 !important;
   }
 
-  .pdf-root .mb-12 {
-    margin-bottom: 1.1rem;
+  /* 进一步压缩项目卡片内部间距 */
+  .pdf-root .mt-2 { margin-top: 0.2rem !important; }
+  .pdf-root .mt-3 { margin-top: 0.25rem !important; }
+  .pdf-root .mt-4 { margin-top: 0.3rem !important; }
+  .pdf-root .mt-5 { margin-top: 0.35rem !important; }
+  .pdf-root .pt-5 { padding-top: 0.35rem !important; }
+  .pdf-root .mb-3 { margin-bottom: 0.2rem !important; }
+  .pdf-root .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.1rem !important;
+  }
+  .pdf-root .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.35rem !important;
+  }
+  .pdf-root .py-1\.5 {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+  .pdf-root .gap-y-4 {
+    row-gap: 0.4rem !important;
   }
 
-  .pdf-root .mb-5 {
-    margin-bottom: 0.65rem;
-  }
-
+  /* 分页：避免标题被拆开、条目被拦腰截断 */
   .pdf-root h3 {
     break-after: avoid;
     page-break-after: avoid;
   }
-
   .pdf-root li {
     break-inside: avoid;
     page-break-inside: avoid;
@@ -182,9 +252,8 @@
 
   .pdf-root .shadow-lg,
   .pdf-root .shadow-sm {
-    box-shadow: none;
+    box-shadow: none !important;
   }
-
   .pdf-root .overflow-hidden img {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

@@ -90,7 +90,7 @@ async function main() {
       path: OUT_PATH,
       format: "A4",
       printBackground: true,
-      margin: { top: "12mm", bottom: "12mm", left: "12mm", right: "12mm" },
+      margin: { top: "6mm", bottom: "6mm", left: "8mm", right: "8mm" },
     });
     console.log(`==> saved ${OUT_PATH}`);
   } finally {
