@@ -20,11 +20,15 @@
 # production
 /build
 /resume.pdf
+/resume-ai.pdf
 /丁凯resume.pdf
 
 # misc
 .DS_Store
 *.pem
+
+# personal interview notes (keep out of public repo)
+/docs/interview-prep/
 
 # debug
 npm-debug.log*

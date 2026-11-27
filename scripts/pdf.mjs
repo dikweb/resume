@@ -7,7 +7,8 @@ import { chromium } from "playwright-core";
 const ROOT = new URL("..", import.meta.url).pathname;
 const OUT_DIR = join(ROOT, "out");
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const OUT_PATH = join(ROOT, "resume.pdf");
+const PDF_PATH = process.env.PDF_PATH ?? "/pdf/";
+const OUT_PATH = join(ROOT, process.env.PDF_OUT ?? "resume.pdf");
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -76,7 +77,8 @@ function startServer() {
 async function main() {
   await build();
   const { server, port } = await startServer();
-  const url = `http://127.0.0.1:${port}${BASE_PATH}/pdf/`;
+  const normalizedPath = PDF_PATH.startsWith("/") ? PDF_PATH : `/${PDF_PATH}`;
+  const url = `http://127.0.0.1:${port}${BASE_PATH}${normalizedPath}`;
   console.log(`==> rendering ${url}`);
 
   let browser;

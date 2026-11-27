@@ -9,14 +9,19 @@ export function HighlightSection({
 }) {
   return (
     <div className="space-y-px">
-      {items.map((item) => (
-        <div key={item.title} className="flex gap-2 text-sm py-1.5 pl-1">
+      {items.map((item, i) => (
+        <div key={item.title || i} className="flex gap-2 text-sm py-1.5 pl-1">
           <span className="mt-[7px] w-1 h-1 shrink-0 rounded-full bg-muted-foreground/40" />
           <div className="min-w-0">
-            <span className="font-medium text-foreground/90">{item.title}</span>
-            <span className="text-muted-foreground ml-1">
-              —— {item.summary}
-            </span>
+            {item.title && (
+              <>
+                <span className="font-medium text-foreground/90">
+                  {item.title}
+                </span>
+                <span className="text-muted-foreground ml-1">—— </span>
+              </>
+            )}
+            <span className="text-muted-foreground">{item.summary}</span>
           </div>
         </div>
       ))}

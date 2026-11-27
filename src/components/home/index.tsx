@@ -5,14 +5,14 @@ import Image from "next/image";
 import { Mail, Phone, GraduationCap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { profile } from "./resumeData";
 import {
-  profile,
-  jobs,
-  projects,
-  agentProjects,
-} from "./resumeData";
+  conciseJobs,
+  conciseProjects,
+  conciseAgentProjects,
+} from "./resumeData.concise";
 import { JobBody, ProjectCard } from "./section-ui";
-import NewResumeLayout from "./new-layout";
+import ConciseResumeLayout from "./concise-layout";
 
 const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -26,8 +26,8 @@ function LayoutSwitch({
   onChange: (v: ViewMode) => void;
 }) {
   const items: { key: ViewMode; label: string }[] = [
-    { key: "new", label: "新版 · Tab 布局" },
-    { key: "classic", label: "经典版 · 长文" },
+    { key: "new", label: "Tab 布局" },
+    { key: "classic", label: "长文版" },
   ];
   return (
     <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-1 rounded-l-2xl rounded-r-none bg-background/80 backdrop-blur p-1 border border-r-0 border-border/60 shadow-md">
@@ -54,7 +54,7 @@ export default function Home() {
   return (
     <div className="w-full flex flex-col items-center">
       <LayoutSwitch view={view} onChange={setView} />
-      {view === "new" ? <NewResumeLayout /> : <ClassicResume />}
+      {view === "new" ? <ConciseResumeLayout /> : <ClassicResume />}
     </div>
   );
 }
@@ -141,7 +141,7 @@ export function ClassicResume() {
 
         <Card className="shadow-none border-border/60 hover:border-border transition-colors">
           <CardContent>
-            {jobs.map((job, idx) => (
+            {conciseJobs.map((job, idx) => (
               <div
                 key={`${job.company}-${job.range}`}
                 className={
@@ -184,7 +184,7 @@ export function ClassicResume() {
         </h2>
 
         <div className="space-y-4">
-          {agentProjects.map((proj) => (
+          {conciseAgentProjects.map((proj) => (
             <ProjectCard key={proj.title} project={proj} />
           ))}
         </div>
@@ -197,7 +197,7 @@ export function ClassicResume() {
         </h2>
 
         <div className="space-y-4">
-          {projects.map((proj) => (
+          {conciseProjects.map((proj) => (
             <ProjectCard key={proj.title} project={proj} />
           ))}
         </div>

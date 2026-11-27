@@ -12,13 +12,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { profile, type Project } from "./resumeData";
 import {
-  profile,
-  jobs,
-  projects,
-  agentProjects,
-  type Project,
-} from "./resumeData";
+  conciseJobs,
+  conciseAgentProjects,
+  conciseProjects,
+} from "./resumeData.concise";
 import { JobBody, ProjectCard } from "./section-ui";
 
 const mediaBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -105,7 +104,7 @@ function LeftPanel() {
 function WorkTab() {
   return (
     <div className="space-y-4">
-      {jobs.map((job) => (
+      {conciseJobs.map((job) => (
         <Card key={`${job.company}-${job.range}`} className="shadow-none border-border/60">
           <CardContent className="pt-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -154,7 +153,7 @@ const tabMeta = [
   { value: "project", label: "其他项目", icon: FolderKanban },
 ];
 
-export default function NewResumeLayout() {
+export default function ConciseResumeLayout() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6">
       <div className="grid gap-6 md:grid-cols-[260px_minmax(0,1fr)] md:items-start">
@@ -182,10 +181,10 @@ export default function NewResumeLayout() {
               <WorkTab />
             </TabsContent>
             <TabsContent value="project" className="mt-4">
-              <ProjectTab list={projects} />
+              <ProjectTab list={conciseProjects} />
             </TabsContent>
             <TabsContent value="agent" className="mt-4">
-              <ProjectTab list={agentProjects} />
+              <ProjectTab list={conciseAgentProjects} />
             </TabsContent>
           </Tabs>
         </div>
